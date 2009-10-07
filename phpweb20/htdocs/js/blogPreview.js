@@ -24,4 +24,6 @@ Event.observe(window, 'load', function() {
                 Event.stop(e);
         });
     }
+
+	var im = new BlogImageManager('post_images');
 });

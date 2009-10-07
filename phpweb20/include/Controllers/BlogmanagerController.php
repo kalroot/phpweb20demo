@@ -152,6 +152,7 @@ class BlogmanagerController extends CustomControllerAction
 		$request = $this->getRequest();
 		$post_id = (int)$request->getPost('id');
 		$post = new DatabaseObject_BlogPost($this->db);
+		$json = array();
 
 		if (!$post->loadForUser($this->identity->user_id, $post_id))
 			$this->_redirect($this->getUrl());
@@ -178,12 +179,22 @@ class BlogmanagerController extends CustomControllerAction
 			if ($image->loadForPost($post->getId(), $image_id))
 			{
 				$image->delete();
-				$this->messenger->addMessage('Image deleted');
+				if ($request->isXmlHttpRequest())
+				{
+					$json = array('deleted' => true, 'image_id' => $image_id);
+				}
+				else
+					$this->messenger->addMessage('Image deleted');
 			}
 		}
 
-		$url = $this->getUrl('preview') . '?id=' . $post->getId();
-		$this->_redirect($url);
+		if ($request->isXmlHttpRequest())
+			$this->sendJson($json);
+		else
+		{
+			$url = $this->getUrl('preview') . '?id=' . $post->getId();
+			$this->_redirect($url);
+		}
 	}
 }
 

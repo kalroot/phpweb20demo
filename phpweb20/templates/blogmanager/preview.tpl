@@ -1,6 +1,7 @@
 {include file='header.tpl' section='blogmanager'}
 
 <script type="text/javascript" src="/js/blogPreview.js"></script>
+<script type="text/javascript" src="/js/BlogImageManager.class.js"></script>
 
 <form method="post"
       action="{geturl controller='blogmanager' action='setstatus'}"
