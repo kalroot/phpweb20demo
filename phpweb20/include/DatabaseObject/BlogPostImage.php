@@ -59,6 +59,19 @@ class DatabaseObject_BlogPostImage extends DatabaseObject
 		return false;
 	}
 
+	public function preDelete()
+	{
+		unlink($this->getFullPath());
+
+		$pattern = sprintf('%s/%d.*', self::GetThumbnailPath(), $this->getId());
+		foreach (glob($pattern) as $thumbnail)
+		{
+			unlink($thumbnail);
+		}
+
+		return true;
+	}
+
 	public static function GetThumbnailPath()
 	{
 		$config = Zend_Registry::get('config');
@@ -169,6 +182,24 @@ class DatabaseObject_BlogPostImage extends DatabaseObject
 		$images = parent::BuildMultiple($db, __CLASS__, $data);
 
 		return $images;
+	}
+
+	public function loadForPost($post_id, $image_id)
+	{
+		$post_id = (int)$post_id;
+		$image_id = (int)$image_id;
+
+		if ($post_id <= 0 || $image_id <= 0)
+			return false;
+
+		$query = sprintf('select %s from %s where post_id = %d and image_id = %d',
+				join(', ', $this->getSelectFields()),
+				$this->_table,
+				$post_id,
+				$image_id
+		);
+
+		return $this->_load($query);
 	}
 }
 

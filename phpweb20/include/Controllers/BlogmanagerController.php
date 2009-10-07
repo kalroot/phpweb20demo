@@ -173,7 +173,13 @@ class BlogmanagerController extends CustomControllerAction
 		}
 		else if ($request->getPost('delete'))
 		{
-
+			$image_id = (int)$request->getPost('image');
+			$image = new DatabaseObject_BlogPostImage($this->db);
+			if ($image->loadForPost($post->getId(), $image_id))
+			{
+				$image->delete();
+				$this->messenger->addMessage('Image deleted');
+			}
 		}
 
 		$url = $this->getUrl('preview') . '?id=' . $post->getId();
