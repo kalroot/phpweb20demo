@@ -170,7 +170,8 @@ class BlogmanagerController extends CustomControllerAction
 		}
 		else if ($request->getPost('reorder'))
 		{
-
+			$order = $request->getPost('post_images');
+			$post->setImageOrder($order);
 		}
 		else if ($request->getPost('delete'))
 		{

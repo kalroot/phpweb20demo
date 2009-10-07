@@ -12,6 +12,15 @@ BlogImageManager.prototype =
 		this.container.getElementsBySelector('form').each(function(form){
 			form.observe('submit', this.onDeleteClick.bindAsEventListener(this));
 		}.bind(this));
+
+		var options =
+		{
+			overlap		: 'horizontal',
+			constraint	: false,
+			onUpdate	: this.onSortUpdate.bind(this)
+		};
+
+		Sortable.create(this.container, options);
 	},
 
 	onDeleteClick : function(e)
@@ -62,5 +71,21 @@ BlogImageManager.prototype =
 	onDeleteFailure : function(transport)
 	{
 		message_write('Error deleting image');
+	},
+
+	onSortUpdate : function(draggable)
+	{
+		var form = this.container.down('form');
+		var post_id = $F(form.down('input[name=id]'));
+
+		var options =
+		{
+			method		: form.method,
+			parameters	: 'reorder=1' + '&id=' + post_id + '&' + Sortable.serialize(draggable),
+			onSuccess	: function() { message_clear(); }
+		};
+
+		message_write('Updating image order...');
+		new Ajax.Request(form.action, options);
 	}
 }

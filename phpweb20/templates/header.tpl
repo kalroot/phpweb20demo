@@ -13,6 +13,11 @@
         	<link rel="alternate" type="application/atom+xml"
             		title="{$feedTitle|escape}" href="{$feedUrl|escape}" />
         {/if}
+
+		{if $lightbox}
+			<script type="text/javascript" src="/js/lightbox.js"></script>
+			<link rel="stylesheet" href="/css/lightbox.css" type="text/css" />
+		{/if}
     </head>
     <body>
     	<div id="header">

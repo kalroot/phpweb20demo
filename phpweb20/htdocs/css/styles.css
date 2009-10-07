@@ -235,12 +235,23 @@
         margin-top  : 5px;
         clear       : both;
     }
+
+	.teaser-image {
+		float		: left;
+		margin		: 0 5px 5px 0;
+	}
     
 	.post-date {
         font-size   : 0.8em;
         color       : #666;
         margin      : 0 0 10px 0;
     }
+
+	.post-image {
+		float		: right;
+		clear		: right;
+		margin		: 0 0 5px 5px;
+	}
     
 	#preview-tags {
         background  : #f7f7f7;

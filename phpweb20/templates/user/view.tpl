@@ -1,4 +1,4 @@
-{include file='header.tpl'}
+{include file='header.tpl' lightbox=true}
 
 <div id="post-tags">
 	<strong>Tags:</strong>
@@ -13,6 +13,14 @@
 <div class="post-date">
 	{$post->ts_created|date_format:'%b %e, %Y %l:%M %p'}
 </div>
+
+{foreach from=$post->images item=image}
+	<div class="post-image">
+		<a href="{imagefilename id=$image->getId() w=600}" rel="lightbox[blog]">
+			<img src="{imagefilename id=$image->getId() w=150}" />
+		</a>
+	</div>
+{/foreach}
 
 <div class="post-content">
 	{$post->profile->content}

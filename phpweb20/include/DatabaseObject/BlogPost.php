@@ -85,6 +85,10 @@ class DatabaseObject_BlogPost extends DatabaseObject
 	{
 		$this->profile->delete();
 		$this->deleteAllTags();
+
+		foreach ($this->images as $image)
+			$image->delete(false);
+
 		return true;
 	}
 	
@@ -236,6 +240,12 @@ class DatabaseObject_BlogPost extends DatabaseObject
 			else
 				$posts[$post_id]->profile->setPostId($post_id);
 		}
+
+		$options = array('post_id' => $post_ids);
+		$images = DatabaseObject_BlogPostImage::GetImages($db, $options);
+
+		foreach ($images as $image)
+			$posts[$image->post_id]->images[$image->getId()] = $image;
 		
 		return $posts;
 	}
@@ -409,6 +419,34 @@ class DatabaseObject_BlogPost extends DatabaseObject
 		}
 		
 		return $summary;
+	}
+
+	public function setImageOrder($order)
+	{
+		if (!is_array($order))
+			return;
+
+		$newOrder = array();
+		foreach ($order as $image_id)
+		{
+			if (array_key_exists($image_id, $this->images))
+				$newOrder[] = $image_id;
+		}
+
+		$newOrder = array_unique($newOrder);
+		if (count($newOrder) != count($this->images))
+			return;
+
+		$rank = 1;
+		foreach ($newOrder as $image_id)
+		{
+			$this->_db->update('blog_posts_images',
+				array('ranking' => $rank),
+				'image_id = ' . $image_id
+			);
+
+			$rank++;
+		}
 	}
 }
 

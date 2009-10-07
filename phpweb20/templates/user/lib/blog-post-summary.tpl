@@ -12,6 +12,15 @@
     <div class="teaser-date">
     	{$post->ts_created|date_format:'%b %e, %Y %l:%M %p'}
     </div>
+
+	{if $post->images|@count > 0}
+		{assign var=image value=$post->images|@current}
+		<div class="teaser-image">
+			<a href="{$url|escape}">
+				<img src="{imagefilename id=$image->getId() w=100}" alt="" />
+			</a>
+		</div>
+	{/if}
     
     <div class="teaser-content summary">
     	{$post->getTeaser(500)}
