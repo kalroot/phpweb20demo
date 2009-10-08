@@ -448,6 +448,33 @@ class DatabaseObject_BlogPost extends DatabaseObject
 			$rank++;
 		}
 	}
+
+	public function getIndexableDocument()
+	{
+		$doc = new Zend_Search_Lucene_Document();
+		$doc->addField(Zend_Search_Lucene_Field::keyword('post_id', $this->getId()));
+
+		$fields = array(
+			'title'		=> $this->profile->title,
+			'content'	=> strip_tags($this->profile->content),
+			'published' => $this->profile->ts_published,
+			'tags'		=> join(' ', $this->getTags())
+		);
+
+		foreach ($fields as $name => $field)
+		{
+			$doc->addField(Zend_Search_Lucene_Field::unStored($name, $field));
+		}
+
+		return $doc;
+	}
+
+	public static function getIndexFullpath()
+	{
+		$config = Zend_Registry::get('config');
+
+		return sprintf('%s/search-index', $config->paths->data);
+	}
 }
 
 ?>
