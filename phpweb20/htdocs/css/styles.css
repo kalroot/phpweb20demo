@@ -313,6 +313,13 @@
 	#preview-images div {
 		clear : both;
 	}
+
+	.pager {
+		text-align		: center;
+		border-top		: 1px dashed #eee;
+		padding-top		: 5px;
+		font-size		: 85%;
+	}
 }
 
 @media print {

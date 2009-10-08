@@ -545,7 +545,7 @@ class DatabaseObject_BlogPost extends DatabaseObject
 		{
 			$index = Zend_Search_Lucene::open(self::getIndexFullpath());
 
-			$query = Zend_Search_Lucene_Search_Query_Term(
+			$query = new Zend_Search_Lucene_Search_Query_Term(
 				new Zend_Search_Lucene_Index_Term($this->getId(), 'post_id')
 			);
 
