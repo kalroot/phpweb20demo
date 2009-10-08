@@ -475,6 +475,28 @@ class DatabaseObject_BlogPost extends DatabaseObject
 
 		return sprintf('%s/search-index', $config->paths->data);
 	}
+
+	public static function RebuildIndex()
+	{
+		try
+		{
+			$index = Zend_Search_Lucene::create(self::getIndexFullpath());
+
+			$options = array('status' => self::STATUS_LIVE);
+			$posts = self::GetPosts(Zend_Registry::get('db'), $options);
+			foreach ($posts as $post)
+			{
+				$index->addDocument($post->getIndexableDocument());
+			}
+
+			$index->commit();
+		}
+		catch (Exception $ex)
+		{
+			$logger = Zend_Registry::get('logger');
+			$logger->warn('Error rebuilding search index: ' . $ex->getMessage());
+		}
+	}
 }
 
 ?>
