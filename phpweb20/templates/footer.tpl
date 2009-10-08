@@ -2,12 +2,17 @@
         </div>
         
         <div id="left-container" class="column">
+			<div class="box" id="search">
+				<form method="get" action="{geturl controller='search'}">
+					<div>
+						<input type="text" name="q" value="{$q|escape}" id="search-query" />
+						<input type="submit" value="Search" />
+					</div>
+				</form>
+			</div>
+
         	{if isset($leftcolumn) && $leftcolumn|strlen > 0}
             	{include file=$leftcolumn}
-            {else}
-        		<div class="box">
-            		Left column placeholder
-            	</div>
             {/if}
         </div>
         

@@ -72,12 +72,14 @@ class DatabaseObject_BlogPost extends DatabaseObject
 	{
 		$this->profile->setPostId($this->getId());
 		$this->profile->save(false);
+		$this->addToIndex();
 		return true;
 	}
 	
 	protected function postUpdate()
 	{
 		$this->profile->save(false);
+		$this->addToIndex();
 		return true;
 	}
 	
@@ -89,6 +91,7 @@ class DatabaseObject_BlogPost extends DatabaseObject
 		foreach ($this->images as $image)
 			$image->delete(false);
 
+		$this->deleteFromIndex();
 		return true;
 	}
 	
@@ -354,6 +357,8 @@ class DatabaseObject_BlogPost extends DatabaseObject
 			
 			$this->_db->insert('blog_posts_tags', $data);
 		}
+
+		$this->addToIndex();
 	}
 	
 	public function  deleteTags($tags)
@@ -379,6 +384,8 @@ class DatabaseObject_BlogPost extends DatabaseObject
 					   $this->_db->quoteInto('lower(tag) in (?)', $tags));
 					   
 		$this->_db->delete('blog_posts_tags', $where);
+
+		$this->addToIndex();
 	}
 	
 	public function deleteAllTags()
@@ -495,6 +502,63 @@ class DatabaseObject_BlogPost extends DatabaseObject
 		{
 			$logger = Zend_Registry::get('logger');
 			$logger->warn('Error rebuilding search index: ' . $ex->getMessage());
+		}
+	}
+
+	protected function addToIndex()
+	{
+		try
+		{
+			$index = Zend_Search_Lucene::open(self::getIndexFullpath());
+		}
+		catch (Exception $ex)
+		{
+			self::RebuildIndex();
+			return;
+		}
+
+		try
+		{
+			$query = new Zend_Search_Lucene_Search_Query_Term(
+				new Zend_Search_Lucene_Index_Term($this->getId(), 'post_id')
+			);
+
+			$hits = $index->find($query);
+			foreach ($hits as $hit)
+				$index->delete($hit->id);
+
+			if ($this->status == self::STATUS_LIVE)
+				$index->addDocument($this->getIndexableDocument());
+
+			$index->commit();
+		}
+		catch (Exception $ex)
+		{
+			$logger = Zend_Registry::get('logger');
+			$logger->warn('Error updating document in search index: ' . $ex->getMessage());
+		}
+	}
+
+	protected function deleteFromIndex()
+	{
+		try
+		{
+			$index = Zend_Search_Lucene::open(self::getIndexFullpath());
+
+			$query = Zend_Search_Lucene_Search_Query_Term(
+				new Zend_Search_Lucene_Index_Term($this->getId(), 'post_id')
+			);
+
+			$hits = $index->find($query);
+			foreach ($hits as $hit)
+				$index->delete($hit->id);
+
+			$index->commit();
+		}
+		catch (Exception $ex)
+		{
+			$logger = Zend_Registry::get('logger');
+			$logger->warn('Error removing document from search index: ' . $ex->getMessage());
 		}
 	}
 }
