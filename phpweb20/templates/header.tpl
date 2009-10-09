@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="/css/styles.css" type="text/css" media="all" />
         <script type="text/javascript" src="/js/prototype.js"></script>
         <script type="text/javascript" src="/js/scriptaculous/scriptaculous.js"></script>
+		<script type="text/javascript" src="/js/SearchSuggestor.class.js"></script>
         <script type="text/javascript" src="/js/scripts.js"></script>
         {if $feedUrl|strlen > 0 && $feedTitle|strlen > 0}
         	<link rel="alternate" type="application/atom+xml"

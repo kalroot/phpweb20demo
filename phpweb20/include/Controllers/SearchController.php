@@ -75,6 +75,14 @@ class SearchController extends CustomControllerAction
 		$this->view->search = $search;
 		$this->view->users = $users;
 	}
+
+	public function suggestionAction()
+	{
+		$q = trim($this->getRequest()->getPost('q'));
+
+		$suggestions = DatabaseObject_BlogPost::GetTagSuggestions($this->db, $q, 10);
+		$this->sendJson($suggestions);
+	}
 }
 
 ?>

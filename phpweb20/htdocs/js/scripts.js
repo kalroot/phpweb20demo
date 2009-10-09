@@ -34,6 +34,8 @@ function init(e)
 	{
 		new Effect.Highlight(messages);
 	}
+
+	new SearchSuggestor('search');
 }
 
 Event.observe(window, 'load', init);

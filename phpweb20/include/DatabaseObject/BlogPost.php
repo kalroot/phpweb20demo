@@ -561,6 +561,26 @@ class DatabaseObject_BlogPost extends DatabaseObject
 			$logger->warn('Error removing document from search index: ' . $ex->getMessage());
 		}
 	}
+
+	public static function GetTagSuggestions($db, $partialTag, $limit = 0)
+	{
+		$partialTag = trim($partialTag);
+		if (strlen($partialTag) == 0)
+			return array();
+
+		$select = $db->select();
+		$select->distinct();
+		$select->from(array('t' => 'blog_posts_tags'), 'lower(tag)')
+			   ->joinInner(array('p' => 'blog_posts'), 't.post_id = p.post_id', array())
+			   ->where('lower(t.tag) like lower(?)', $partialTag . '%')
+			   ->where('p.status = ?', self::STATUS_LIVE)
+			   ->order('lower(t.tag)');
+
+		if ($limit > 0)
+			$select->limit($limit);
+
+		return $db->fetchCol($select);
+	}
 }
 
 ?>

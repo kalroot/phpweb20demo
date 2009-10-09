@@ -320,6 +320,36 @@
 		padding-top		: 5px;
 		font-size		: 85%;
 	}
+
+	#search { position : relative; }
+	
+    #search-query {
+        width : 170px;
+        border : 1px solid #707070;
+        padding : 2px;
+    }
+
+    #search ul {
+        position        : absolute;
+        list-style-type : none;
+        width           : 174px;
+        margin          : -2px 0 0 0;
+        padding         : 0;
+        background      : #f7f7f7;
+        border          : 1px solid #707070;
+        font-size       : 85%;
+    }
+
+    #search li {
+        padding : 2px;
+        margin  : 0;
+    }
+
+	#search li.active {
+		background	: #f22;
+		color		: #fff;
+		cursor		: pointer;
+	}
 }
 
 @media print {
