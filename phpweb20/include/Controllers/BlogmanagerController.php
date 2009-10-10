@@ -197,6 +197,96 @@ class BlogmanagerController extends CustomControllerAction
 			$this->_redirect($url);
 		}
 	}
+
+	public function locationsAction()
+	{
+		$request = $this->getRequest();
+		$post_id = (int)$request->getQuery('id');
+
+		$post = new DatabaseObject_BlogPost($this->db);
+		if (!$post->loadForUser($this->identity->user_id, $post_id))
+			$this->_redirect($this->getUrl());
+
+		$this->breadcrumbs->addStep(
+			'Preview Post: ' . $post->profile->title,
+			$this->getUrl('preview') . '?id=' . $post->getId()
+		);
+		$this->breadcrumbs->addStep('Manage Locations');
+
+		$this->view->post = $post;
+	}
+
+	public function locationsmanageAction()
+	{
+		$request = $this->getRequest();
+		$action  = $request->getPost('action');
+		$post_id = $request->getPost('post_id');
+		$ret = array('post_id' => 0);
+		$post = new DatabaseObject_BlogPost($this->db);
+
+		if ($post->loadForUser($this->identity->user_id, $post_id))
+		{
+			$ret['post_id'] = $post->getId();
+			switch ($action)
+			{
+				case 'get':
+					$ret['locations'] = array();
+					foreach ($post->locations as $location)
+					{
+						$ret['locations'][] = array(
+							'location_id' => $location->getId(),
+							'latitude'	  => $location->latitude,
+							'longitude'	  => $location->longitude,
+							'description' => $location->description
+						);
+					}
+					break;
+
+				case 'add':
+					$fp = new FormProcessor_BlogPostLocation($post);
+					if ($fp->process($request))
+					{
+						$ret['location_id'] = $fp->location->getId();
+						$ret['latitude']	= $fp->location->latitude;
+						$ret['longitude']	= $fp->location->longitude;
+						$ret['description']	= $fp->location->description;
+					}
+					else
+					{
+						$ret['location_id'] = 0;
+					}
+					break;
+
+				case 'delete':
+					$location_id = $request->getPost('location_id');
+					$location = new DatabaseObject_BlogPostLocation($this->db);
+					if ($location->loadForPost($post->getId(), $location_id))
+					{
+						$ret['location_id'] = $location->getId();
+						$location->delete();
+					}
+					break;
+
+				case 'move':
+					$location_id = $request->getPost('location_id');
+					$location = new DatabaseObject_BlogPostLocation($this->db);
+					if ($location->loadForPost($post->getId(), $location_id))
+					{
+						$location->longitude = $request->getPost('longitude');
+						$location->latitude	 = $request->getPost('latitude');
+						$location->save();
+
+						$ret['location_id'] = $location->getId();
+						$ret['latitude']	= $location->latitude;
+						$ret['longitude']	= $location->longitude;
+						$ret['description']	= $location->description;
+					}
+					break;
+			}
+		}
+
+		$this->sendJson($ret);
+	}
 }
 
 ?>

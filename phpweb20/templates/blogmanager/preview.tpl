@@ -94,6 +94,25 @@
 	</form>
 </fieldset>
 
+<fieldset id="preview-locations">
+	<legend>Locations</legend>
+
+	<ul>
+		{foreach from=$post->locations item=location}
+			<li>{$location->description|escape}</li>
+		{foreachelse}
+			<li>No locations have been assigned to this post.</li>
+		{/foreach}
+	</ul>
+
+	<form method="get" action="{geturl action='locations'}">
+		<div>
+			<input type="hidden" name="id" value="{$post->getId()}" />
+			<input type="submit" value="Manage Locations" />
+		</div>
+	</form>
+</fieldset>
+
 <div class="preview-date">
     {$post->ts_created|date_format:'%x %X'}
 </div>

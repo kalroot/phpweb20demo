@@ -314,6 +314,15 @@
 		clear : both;
 	}
 
+	#preview-locations {
+		margin		: 5px 0;
+		padding		: 5px;
+	}
+
+	#preview-locations input, #preview-locations li {
+		font-size	: 0.95em;
+	}
+
 	.pager {
 		text-align		: center;
 		border-top		: 1px dashed #eee;
@@ -349,6 +358,10 @@
 		background	: #f22;
 		color		: #fff;
 		cursor		: pointer;
+	}
+
+	#location-manager {
+		height		: 400px;
 	}
 }
 

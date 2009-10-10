@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
     <head>
         <title>{$title|escape}</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link rel="stylesheet" href="/css/styles.css" type="text/css" media="all" />
         <script type="text/javascript" src="/js/prototype.js"></script>
         <script type="text/javascript" src="/js/scriptaculous/scriptaculous.js"></script>
@@ -18,6 +18,15 @@
 		{if $lightbox}
 			<script type="text/javascript" src="/js/lightbox.js"></script>
 			<link rel="stylesheet" href="/css/lightbox.css" type="text/css" />
+		{/if}
+
+		{if $maps}
+			<script type="text/javascript"
+			src="http://www.google.com/jsapi?key={$config->google->maps->key|escape}"></script>
+
+			{if $section == 'blogmanager'}
+				<script type="text/javascript" src="/js/BlogLocationManager.class.js"></script>
+			{/if}
 		{/if}
     </head>
     <body>

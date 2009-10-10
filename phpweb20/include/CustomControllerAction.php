@@ -32,6 +32,7 @@ class CustomControllerAction extends Zend_Controller_Action
 		$this->view->title = $this->breadcrumbs->getTitle();
 		$this->view->messages = $this->messenger->getMessages();
 		$this->view->isXmlHttpRequest = $this->getRequest()->isXmlHttpRequest();
+		$this->view->config = Zend_Registry::get('config');
 	}
 	
 	public function getUrl($action = null, $controller = null)

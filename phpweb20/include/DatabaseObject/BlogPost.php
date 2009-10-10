@@ -4,6 +4,7 @@ class DatabaseObject_BlogPost extends DatabaseObject
 {
 	public $profile = null;
 	public $images = array();
+	public $locations = array();
 	
 	const STATUS_DRAFT 	= 'D';
 	const STATUS_LIVE	= 'L';
@@ -60,6 +61,7 @@ class DatabaseObject_BlogPost extends DatabaseObject
 		$this->profile->load();
 		$options = array('post_id' => $this->getId());
 		$this->images = DatabaseObject_BlogPostImage::GetImages($this->getDb(), $options);
+		$this->locations = DatabaseObject_BlogPostLocation::GetLocations($this->getDb(), $options);
 	}
 	
 	protected function preInsert()
@@ -246,9 +248,12 @@ class DatabaseObject_BlogPost extends DatabaseObject
 
 		$options = array('post_id' => $post_ids);
 		$images = DatabaseObject_BlogPostImage::GetImages($db, $options);
-
 		foreach ($images as $image)
 			$posts[$image->post_id]->images[$image->getId()] = $image;
+
+		$locations = DatabaseObject_BlogPostLocation::GetLocations($db, $options);
+		foreach ($locations as $l)
+			$posts[$l->post_id]->locations[$l->getId()] = $l;
 		
 		return $posts;
 	}
