@@ -4,20 +4,21 @@
 		<title>jQuery Test</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<script type="text/javascript" src="/js/jquery-1.3.2.min.js"></script>
+		<script type="text/javascript" src="/js/ui.core.js"></script>
+		<script type="text/javascript" src="/js/ui.draggable.js"></script>
 		<script type="text/javascript">
-			$(function(){
-				var a = [1,2,3,4,5];
-				$.each(a, function(i, v){
-					this.value = 10;
-				});
-
-				a[10] = 'a'
-				alert(a[10]);
-			});
+			var aa = new Array();
+			aa[1] = 1;
+			aa[2] = 2;
+			aa[3] = 3;
+			alert(count(aa));
+			delete aa[2];
+			alert(count(aa));
 		</script>
 
 	</head>
 	<body>
+		<img id="img1" src="/images/logo.gif" />
 		<div></div>
 	</body>
 </html>

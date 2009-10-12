@@ -2,294 +2,294 @@ google.load('maps', '2');
 
 BlogLocationManager = Class.create();
 
-BlogLocationManager.prototype =
-{
-	url			: null,
+BlogLocationManager.prototype = {
 
-	post_id		: null,
-	container	: null,
-	map			: null,
-	geocoder	: null,
+    url       : null,
 
-	markers		: $H({}),
+    post_id   : null,   // ID of the blog post being managed
+    container : null,   // DOM element in which map is shown
+    map       : null,   // The instance of Google Maps
+    geocoder  : null,   // Used to look up addresses
 
-	markerTemplate : new Template(
-		'<div>' + '#{desc}<br />' + '<input type="button" value="Remove Location" />'
-		+ '</div>'
-	),
+    markers   : $H({}), // holds all markers added to map
 
-	initialize : function(container, form)
-	{
-		form			= $(form);
-		this.url		= form.action;
-		this.post_id	= $F(form.post_id);
-		this.container	= $(container);
+    markerTemplate : new Template(
+        '<div>'
+      + '    #{desc}<br />'
+      + '    <input type="button" value="Remove Location" />'
+      + '</div>'
+    ),
 
-		this.geocoder	= new google.maps.ClientGeocoder();
+    initialize : function(container, form)
+    {
+        form           = $(form);
+        this.url       = form.action;
+        this.post_id   = $F(form.post_id);
+        this.container = $(container);
 
-		Event.observe(window, 'load', this.loadMap.bind(this));
-		form.observe('submit', this.onFormSubmit.bindAsEventListener(this));
-	},
+        this.geocoder = new google.maps.ClientGeocoder();
 
-	loadMap : function()
-	{
-		if (!google.maps.BrowserIsCompatible())
-			return;
+        Event.observe(window, 'load', this.loadMap.bind(this));
+        form.observe('submit', this.onFormSubmit.bindAsEventListener(this));
+    },
 
-		Event.observe(window, 'unload', this.unloadMap.bind(this));
+    loadMap : function()
+    {
+        if (!google.maps.BrowserIsCompatible())
+            return;
 
-		this.map = new google.maps.Map2(this.container);
-		this.zoomAndCenterMap();
-		
-		this.map.addControl(new google.maps.MapTypeControl());
-		this.map.addControl(new google.maps.ScaleControl());
-		this.map.addControl(new google.maps.LargeMapControl());
+        Event.observe(window, 'unload', this.unloadMap.bind(this));
 
-		var overviewMap = new google.maps.OverviewMapControl();
-		this.map.addControl(overviewMap);
-		overviewMap.hide(true);
+        this.map = new google.maps.Map2(this.container);
+        this.zoomAndCenterMap();
 
-		this.map.enableDoubleClickZoom();
-		this.map.enableContinuousZoom();
+        this.map.addControl(new google.maps.MapTypeControl());
+        this.map.addControl(new google.maps.ScaleControl());
+        this.map.addControl(new google.maps.LargeMapControl());
 
-		var options = {
-			parameters	: 'action=get&post_id=' + this.post_id,
-			onSuccess	: this.loadLocationsSuccess.bind(this)
-		}
+        var overviewMap = new google.maps.OverviewMapControl();
+        this.map.addControl(overviewMap);
+        overviewMap.hide(true);
 
-		new Ajax.Request(this.url, options);
-	},
+        this.map.enableDoubleClickZoom();
+        this.map.enableContinuousZoom();
 
-	zoomAndCenterMap : function()
-	{
-		var bounds = new google.maps.LatLngBounds();
-		this.markers.each(function(pair){
-			bounds.extend(pair.value.getPoint());
-		});
+        var options = {
+            parameters : 'action=get&post_id=' + this.post_id,
+            onSuccess  : this.loadLocationsSuccess.bind(this)
+        }
 
-		if (bounds.isEmpty())
-			this.map.setCenter(new google.maps.LatLng(0, 0), 1, G_HYBRID_MAP);
-		else
-		{
-			var zoom = Math.max(1, this.map.getBoundsZoomLevel(bounds) - 1);
-			this.map.setCenter(bounds.getCenter(), zoom);
-		}
-	},
+        new Ajax.Request(this.url, options);
+    },
 
-	addMarkerToMap : function(id, lat, lng, desc)
-	{
-		this.removeMarkerFromMap(id);
+    zoomAndCenterMap : function()
+    {
+        var bounds = new google.maps.LatLngBounds();
+        this.markers.each(function(pair) {
+            bounds.extend(pair.value.getPoint());
+        });
 
-		this.markers[id] = new google.maps.Marker(
-			new google.maps.LatLng(lat, lng),
-			{'title' : desc, draggable : true}
-		);
-		this.markers[id].location_id = id;
+        if (bounds.isEmpty()) {
+            this.map.setCenter(new google.maps.LatLng(0, 0),
+                               1,
+                               G_HYBRID_MAP);
+        }
+        else {
+            var zoom = Math.max(1, this.map.getBoundsZoomLevel(bounds) - 1);
+            this.map.setCenter(bounds.getCenter(), zoom);
+        }
+    },
 
-		var that = this;
-		google.maps.Event.addListener(this.markers[id], 'dragend', function(){
-			that.dragComplete(this);
-		});
-		google.maps.Event.addListener(this.markerr[id], 'dragstart', function(){
-			this.closeInfoWindow();
-		});
+    addMarkerToMap : function(id, lat, lng, desc)
+    {
+        this.removeMarkerFromMap(id);
 
-		this.map.addOverlay(this.markers[id]);
+        this.markers[id] = new google.maps.Marker(
+            new google.maps.LatLng(lat, lng),
+            { 'title' : desc, draggable : true }
+        );
+        this.markers[id].location_id = id;
 
-		var html = this.markerTemplate.evaluate({
-			'location_id'	: id,
-			'lat'			: lat,
-			'lng'			: lng,
-			'desc'			: desc
-		});
-		var node = Builder.build(html);
-		var button = node.getElementsBySelector('input')[0];
-		button.setAttribute('location_id', id);
-		button.observe('click', this.onRemoveMarker.bindAsEventListener(this));
-		this.markers[id].bindInfoWindow(node);
+        var that = this;
+        google.maps.Event.addListener(this.markers[id], 'dragend', function() {
+            that.dragComplete(this);
+        });
+        google.maps.Event.addListener(this.markers[id], 'dragstart', function() {
+            this.closeInfoWindow();
+        });
 
-		return this.markers[id];
-	},
+        this.map.addOverlay(this.markers[id]);
 
-	removeMarkerFromMap : function(location_id)
-	{
-		if (!this.hasMarker(location_id))
-			return;
+        var html = this.markerTemplate.evaluate({
+            'location_id' : id,
+            'lat'         : lat,
+            'lng'         : lng,
+            'desc'        : desc
+        });
 
-		this.map.removeOverlay(this.markers[location_id]);
-		this.markers.unset(location_id);
-	},
+        var node = Builder.build(html);
+        var button = node.getElementsBySelector('input')[0];
 
-	hasMarker : function(location_id)
-	{
-		var location_ids = this.markers.keys();
-		return location_ids.indexOf(location_id) >= 0;
-	},
+        button.setAttribute('location_id', id);
+        button.observe('click', this.onRemoveMarker.bindAsEventListener(this));
 
-	loadLocationsSuccess : function(transport)
-	{
-		var json = transport.responseText.evalJSON(true);
-		if (json.locations == null)
-			return;
+        this.markers[id].bindInfoWindow(node);
 
-		json.locations.each(function(location){
-			this.addMarkerToMap(
-				location.location_id,
-				location.latitude,
-				location.longitude,
-				location.description
-			);
-		}.bind(this));
+        return this.markers[id];
+    },
 
-		this.zoomAndCenterMap();
-	},
+    removeMarkerFromMap : function(location_id)
+    {
+        if (!this.hasMarker(location_id))
+            return;
 
-	onFormSubmit : function(e)
-	{
-		Event.stop(e);
+        this.map.removeOverlay(this.markers[location_id]);
+        this.markers.remove(location_id);
+    },
 
-		var form = Event.element(e);
-		var address = $F(form.location).strip();
+    hasMarker : function(location_id)
+    {
+        var location_ids = this.markers.keys();
 
-		if (address.length == 0)
-			return;
+        return location_ids.indexOf(location_id) >= 0;
+    },
 
-		this.geocoder.getLocations(address, this.createPoint.bind(this));
-	},
+    loadLocationsSuccess : function(transport)
+    {
+        var json = transport.responseText.evalJSON(true);
 
-	createPoint : function(locations)
-	{
-		if (locations.Status.code != G_GEO_SUCCESS)
-		{
-			var msg = '';
-			switch (locations.Status.code)
-			{
-				case G_GEO_BAD_REQUEST:
-					msg = 'Unable to parse request';
-					break;
-				case G_GEO_MISSING_QUERY:
-					msg = 'Query not specified';
-					break;
-				case G_GEO_UNKNOWN_ADDRESS:
-					msg = 'Unable to find address';
-					break;
-				case G_GEO_UNAVAILABLE_ADDRESS:
-					msg = 'Forbidden address';
-					break;
-				case G_GEO_BAD_KEY:
-					msg = 'Invalid API key';
-					break;
-				case G_GEO_TOO_MANY_QUERIES:
-					msg = 'Too many geocoder queries';
-					break;
-				case G_GEO_SERVER_ERROR:
-				default:
-					msg = 'Unknown server error occurred';
-			}
-			
-			message_write(msg);
-			return;
-		}
+        if (json.locations == null)
+            return;
 
-		var placemark = locations.Placemark[0];
+        json.locations.each(function(location) {
+            this.addMarkerToMap(
+                location.location_id,
+                location.latitude,
+                location.longitude,
+                location.description
+            );
+        }.bind(this));
 
-		var options =
-		{
-			parameters : 'action=add'
-						+ '&post_id=' + this.post_id
-						+ '&description=' + escape(placemark.address)
-						+ '&latitude=' + placemark.Point.coordinates[1]
-						+ '&longitude=' + placemark.Point.coordinates[0],
-			onSuccess : this.createPointSuccess.bind(this)
-		}
+        this.zoomAndCenterMap();
+    },
 
-		alert(options.parameters);
+    onFormSubmit : function(e)
+    {
+        Event.stop(e);
 
-		new Ajax.Request(this.url, options);
-	},
+        var form = Event.element(e);
+        var address = $F(form.location).strip();
 
-	createPointSuccess : function(transport)
-	{
-		var json = transport.responseText.evalJSON(true);
+        if (address.length == 0)
+            return;
 
-		if (json.location_id == 0)
-		{
-			message_write('Error adding location to blog post');
-			return;
-		}
+        this.geocoder.getLocations(address, this.createPoint.bind(this));
+    },
 
-		marker = this.addMarkerToMap(
-			json.location_id,
-			json.latitude,
-			json.longitude,
-			json.description
-		);
+    createPoint : function(locations)
+    {
+        if (locations.Status.code != G_GEO_SUCCESS) {
+            // something went wrong:
+            var msg = '';
+            switch (locations.Status.code) {
+                case G_GEO_BAD_REQUEST:
+                    msg = 'Unable to parse request';
+                    break;
+                case G_GEO_MISSING_QUERY:
+                    msg = 'Query not specified';
+                    break;
+                case G_GEO_UNKNOWN_ADDRESS:
+                    msg = 'Unable to find address';
+                    break;
+                case G_GEO_UNAVAILABLE_ADDRESS:
+                    msg = 'Forbidden address';
+                    break;
+                case G_GEO_BAD_KEY:
+                    msg = 'Invalid API key';
+                    break;
+                case G_GEO_TOO_MANY_QUERIES:
+                    msg = 'Too many geocoder queries';
+                    break;
+                case G_GEO_SERVER_ERROR:
+                default:
+                    msg = 'Unknown server error occurred';
+            }
+            message_write(msg);
+            return;
+        }
 
-		google.maps.Event.trigger(marker, 'click');
+        var placemark = locations.Placemark[0];
 
-		this.zoomAndCenterMap();
-	},
+        var options = {
+            parameters : 'action=add'
+                       + '&post_id=' + this.post_id
+                       + '&description=' + escape(placemark.address)
+                       + '&latitude=' + placemark.Point.coordinates[1]
+                       + '&longitude=' + placemark.Point.coordinates[0],
+            onSuccess  : this.createPointSuccess.bind(this)
+        }
 
-	dragComplete : function(marker)
-	{
-		var point = marker.getPoint();
-		var options =
-		{
-			parameters : 'action=move'
-					+ '&post_id=' + this.post_id
-					+ '&location_id=' + marker.location_id
-					+ '&latitude=' + point.lat()
-					+ '&longitude=' + point.lng(),
-			onSuccess : this.onDragCompleteSuccess.bind(this)
-		}
+        new Ajax.Request(this.url, options);
+    },
 
-		new Ajax.Request(this.url, options);
-	},
+    createPointSuccess : function(transport)
+    {
+        var json = transport.responseText.evalJSON(true);
 
-	onDragCompleteSuccess : function(transport)
-	{
-		var json = transport.responseText.evalJSON(true);
+        if (json.location_id == 0) {
+            message_write('Error adding location to blog post');
+            return;
+        }
 
-		if (json.location_id && this.hasMarker(json.location_id))
-		{
-			var point = new google.maps.LatLng(json.latitude, json.longitude);
+        marker = this.addMarkerToMap(
+            json.location_id,
+            json.latitude,
+            json.longitude,
+            json.description
+        );
 
-			var marker = this.addMarkerToMap(
-				json.location_id,
-				json.latitude,
-				json.longitude,
-				json.description
-			);
-			google.maps.Event.trigger(marker, 'click');
-		}
-	},
+        google.maps.Event.trigger(marker, 'click');
 
-	onRemoveMarker : function(e)
-	{
-		var button = Event.element(e);
-		var location_id = button.getAttribute('location_id');
+        this.zoomAndCenterMap();
+    },
 
-		var options =
-		{
-			parameters : 'action=delete'
-					+ '&post_id=' + this.post_id
-					+ '&location_id=' + location_id,
-			onSuccess : this.onRemoveMarkerSuccess.bind(this)
-		};
+    dragComplete : function(marker)
+    {
+        var point = marker.getPoint();
+        var options = {
+            parameters : 'action=move'
+                       + '&post_id=' + this.post_id
+                       + '&location_id=' + marker.location_id
+                       + '&latitude=' + point.lat()
+                       + '&longitude=' + point.lng(),
+            onSuccess  : this.onDragCompleteSuccess.bind(this)
+        }
 
-		new Ajax.Request(this.url, options);
-	},
+        new Ajax.Request(this.url, options);
+    },
 
-	onRemoveMarkerSuccess : function(transport)
-	{
-		var json = transport.responseText.evalJSON(true);
+    onDragCompleteSuccess : function(transport)
+    {
+        var json = transport.responseText.evalJSON(true);
 
-		if (json.location_id)
-			this.removeMarkerFromMap(json.location_id);
-	},
+        if (json.location_id && this.hasMarker(json.location_id)) {
+            var point = new google.maps.LatLng(json.latitude, json.longitude);
 
-	unloadMap : function()
-	{
-		google.maps.Unload();
-	}
-}
+            var marker = this.addMarkerToMap(
+                json.location_id,
+                json.latitude,
+                json.longitude,
+                json.description
+            );
+            google.maps.Event.trigger(marker, 'click');
+        }
+    },
+
+    onRemoveMarker : function(e)
+    {
+        var button = Event.element(e);
+        var location_id = button.getAttribute('location_id');
+
+        var options = {
+            parameters : 'action=delete'
+                       + '&post_id=' + this.post_id
+                       + '&location_id=' + location_id,
+            onSuccess  : this.onRemoveMarkerSuccess.bind(this)
+        };
+
+        new Ajax.Request(this.url, options);
+    },
+
+    onRemoveMarkerSuccess : function(transport)
+    {
+        var json = transport.responseText.evalJSON(true);
+
+        if (json.location_id)
+            this.removeMarkerFromMap(json.location_id);
+    },
+
+    unloadMap : function()
+    {
+        google.maps.Unload();
+    }
+};
