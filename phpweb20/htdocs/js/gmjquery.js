@@ -5,6 +5,48 @@ var map			= null;
 var geocoder	= null;
 var markers		= new Array();
 
+// Javascript也支持关联数组：
+/*
+
+1、直接定义数组：
+myhash = { "key1" : "val1", "key2" : "val2" };
+
+2、用Array()定义：
+
+var myhash = new Array();
+myhash["key1"] = "val1";
+myhash["key2"] = "val2";
+
+3、向关联数组添加新值：
+
+myhash["newkey"] = "newval";
+
+4、删除关联数组键值：
+
+delete myhash["newkey"]; // 整个键与值都消失了
+
+5、遍历整个关联数组：
+
+for (key in myhash)
+{
+	val = myhash[key];
+}
+
+6、如果使用关联数组，就不能再用length属性来获取数组长度了。
+
+7、获取整个关联数组的键数组：
+
+function array_keys(hash)
+{
+	keys = [];
+	for (key in hash)
+		keys.push(key);
+
+	return keys;
+}
+
+*/
+
 $(function(){
 	container = $('#map')[0];
 	geocoder = new google.maps.ClientGeocoder();
@@ -79,6 +121,7 @@ function addMarkerToMap(id, lat, lng, desc)
 
 	map.addOverlay(markers[id]);
 
+	// 注意此处的技巧，直接用html生成包装集。
 	var infoWindow = $(generateHtml(id, lat, lng, desc));
 	markers[id].bindInfoWindow(infoWindow[0]);
 	infoWindow.children('input').attr('id', id).click(onRemoveMarker);
