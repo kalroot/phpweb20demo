@@ -24,4 +24,5 @@
 	</div>
 
 	{include file='footer.tpl' leftcolumn='blogmanager/lib/left-column.tpl'}
+	<script type="text/javascript" src="/js/BlogMonthlySummary.js"></script>
 {/if}

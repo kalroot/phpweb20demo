@@ -1,3 +1,14 @@
+$(function(){
+	$('#post_images').sortable(
+		{
+			opacity: 0.6,
+			revert: true
+		}
+	);
+});
+
+
+/*
 BlogImageManager = Class.create();
 
 BlogImageManager.prototype =
@@ -89,3 +100,4 @@ BlogImageManager.prototype =
 		new Ajax.Request(form.action, options);
 	}
 }
+*/

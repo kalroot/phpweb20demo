@@ -14,9 +14,4 @@
             {/foreach}
         </ul>
 	</div>
-    
-    <script type="text/javascript" src="/js/BlogMonthlySummary.class.js"></script>
-    <script type="text/javascript">
-		new BlogMonthlySummary('month-preview', 'preview-months');
-	</script>
 {/if}

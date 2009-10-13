@@ -1,29 +1,32 @@
-Event.observe(window, 'load', function() {
+$(function(){
 
-    var publishButton   = $('status-publish');
-    var unpublishButton = $('status-unpublish');
-    var deleteButton    = $('status-delete');
+	var publishButton   = $('#status-publish');
+    var unpublishButton = $('#status-unpublish');
+    var deleteButton    = $('#status-delete');
 
-    if (publishButton) {
-        publishButton.observe('click', function(e) {
-            if (!confirm('Click OK to publish this post'))
-                Event.stop(e);
-        });
+    if (publishButton)
+    {
+    	publishButton.click(function(event){
+    		if (!confirm('Click OK to publish this post'))
+    			event.preventDefault();
+    	});
     }
 
-    if (unpublishButton) {
-        unpublishButton.observe('click', function(e) {
-            if (!confirm('Click OK to unpublish this post'))
-                Event.stop(e);
-        });
+    if (unpublishButton)
+    {
+    	unpublishButton.click(function(event){
+    		if (!confirm('Click OK to unpublish this post'))
+    			event.preventDefault();
+    	});
     }
 
-    if (deleteButton) {
-        deleteButton.observe('click', function(e) {
-            if (!confirm('Click OK to permanently delete this post'))
-                Event.stop(e);
-        });
+    if (deleteButton)
+    {
+    	deleteButton.click(function(event){
+    		if (!confirm('Click OK to permanently delete this post'))
+    			event.preventDefault();
+    	});
     }
 
-	var im = new BlogImageManager('post_images');
+	// 图像排序Javascript
 });

@@ -1,41 +1,32 @@
-var settings = 
-{
-		messages 			: 'messages',
-		messages_hide_delay : 0.5
-};
+var messages = '#messages';
+var delay = 500;
+var yellow_color = { backgroundColor: '#FFFF00'};
+var white_color = { backgroundColor: '#FFFFFF' };
 
 function message_write(message)
 {
-	var messages = $(settings.messages);
-	if (!messages)
+	var m = $(messages);
+	if (!m)
 		return;
 	
 	if (message.length == 0)
 	{
-		messages.hide();
+		m.fadeOut(delay);
 		return;
 	}
 	
-	messages.update(message);
-	messages.show();
-	new Effect.Highlight(messages);
+	m.text(message).css('display', 'block').animate(yellow_color, delay).animate(white_color, delay);
 }
 
 function message_clear()
 {
-	setTimeout("message_write('')", settings.messages_hide_delay * 1000);
+	message_write('');
 }
 
-function init(e)
-{
-	var messages = $(settings.messages);
-	
-	if (messages && messages.visible())
-	{
-		new Effect.Highlight(messages);
-	}
+$(function(){
+	var m = $(messages);
+	if (m && m.css('display') != 'none')
+		m.animate(yellow_color, delay).animate(white_color, delay);
 
-	new SearchSuggestor('search');
-}
-
-Event.observe(window, 'load', init);
+	// a SearchSuggestor
+});

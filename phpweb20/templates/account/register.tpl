@@ -53,9 +53,7 @@
     </fieldset>
 </form>
 
-<script type="text/javascript" src="/js/UserRegistrationForm.class.js"></script>
-<script type="text/javascript">
-	new UserRegistrationForm('registration-form');
-</script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
+<script type="text/javascript" src="/js/UserRegistrationForm.js"></script>
 
 {include file='footer.tpl'}
