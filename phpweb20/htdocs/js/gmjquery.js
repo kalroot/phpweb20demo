@@ -4,6 +4,7 @@ var container	= null;
 var map			= null;
 var geocoder	= null;
 var markers		= new Array();
+var i			= 0;
 
 // Javascript也支持关联数组：
 /*
@@ -50,6 +51,7 @@ function array_keys(hash)
 $(function(){
 	container = $('#map')[0];
 	geocoder = new google.maps.ClientGeocoder();
+	$('#lform').submit(onFormSubmit);
 	loadMap();
 });
 
@@ -71,8 +73,8 @@ function loadMap()
 	map.enableDoubleClickZoom();
 	map.enableContinuousZoom();
 
-	addMarkerToMap(0, 28.139878, 120.289431, 'Qing Tian');
-	addMarkerToMap(1, 30.139878, 122.289431, 'Zhou Shan');
+	//addMarkerToMap(0, 28.139878, 120.289431, 'Qing Tian');
+	//addMarkerToMap(1, 30.139878, 122.289431, 'Zhou Shan');
 
 	zoomAndCenterMap();
 }
@@ -126,6 +128,8 @@ function addMarkerToMap(id, lat, lng, desc)
 	markers[id].bindInfoWindow(infoWindow[0]);
 	infoWindow.children('input').attr('id', id).click(onRemoveMarker);
 
+	// 不规范方法
+	i = i + 1;
 	return this.markers[id];
 }
 
@@ -177,4 +181,63 @@ function onRemoveMarker(event)
 {
 	var location_id = $(event.target).attr('id');
 	removeMarkerFromMap(location_id);
+}
+
+function onFormSubmit(event)
+{
+	event.preventDefault();
+
+	var address = $.trim($('#lform input[name=location]').val());
+	if (address == '')
+		return;
+
+	geocoder.getLocations(address, createPoint);
+}
+
+function createPoint(locations)
+{
+	if (locations.Status.code != G_GEO_SUCCESS)
+	{
+		var msg = '';
+		switch (locations.Status.code)
+		{
+			case G_GEO_BAD_REQUEST:
+				msg = 'Unable to parse request';
+				break;
+			case G_GEO_MISSING_QUERY:
+				msg = 'Query not specified';
+				break;
+			case G_GEO_UNKNOWN_ADDRESS:
+				msg = 'Unable to find address';
+				break;
+			case G_GEO_UNAVAILABLE_ADDRESS:
+				msg = 'Forbidden address';
+				break;
+			case G_GEO_BAD_KEY:
+				msg = 'Invalid API key';
+				break;
+			case G_GEO_TOO_MANY_QUERIES:
+				msg = 'Too many geocoder queries';
+				break;
+			case G_GEO_SERVER_ERROR:
+			default:
+				msg = 'Unknown server error occurred';
+		}
+
+		alert(msg);
+		return;
+	}
+
+	var placemark = locations.Placemark[0];
+
+	var detail = 'address = ' + placemark.address + '\n'
+				+ 'latitude = ' + placemark.Point.coordinates[1] + '\n'
+				+ 'longitude = ' + placemark.Point.coordinates[0] + '\n\n'
+				+ '在Google地图上标记这个地址吗？';
+
+	if (confirm(detail))
+		addMarkerToMap(i, 
+				placemark.Point.coordinates[1],
+				placemark.Point.coordinates[0],
+				placemark.address);
 }
