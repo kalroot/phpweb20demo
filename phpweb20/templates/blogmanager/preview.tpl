@@ -3,6 +3,7 @@
 <script type="text/javascript" src="/js/blogPreview.js"></script>
 <script type="text/javascript" src="/js/ui.core.js"></script>
 <script type="text/javascript" src="/js/ui.sortable.js"></script>
+<script type="text/javascript" src="/js/jquery.form.js"></script>
 <script type="text/javascript" src="/js/BlogImageManager.js"></script>
 
 <form method="post"

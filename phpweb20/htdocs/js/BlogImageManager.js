@@ -1,4 +1,12 @@
 $(function(){
+	// 设置delete按键事件
+	$('#post_images form').ajaxForm({
+		dataType		: 'json',
+		beforeSubmit	: function(){ message_write('Deleting image...'); },
+		success			: onDeleteSuccess,
+		error			: onDeleteFailure
+	});
+
 	$('#post_images').sortable(
 		{
 			opacity: 0.6,
@@ -7,7 +15,24 @@ $(function(){
 	);
 });
 
+function onDeleteSuccess(data)
+{
+	if (data.deleted)
+	{
+		var image_id = data.image_id;
+		$('#image_' + image_id).fadeOut('slow', message_clear);
+	}
+	else
+	{
+		onDeleteFailure();
+	}
+}
 
+function onDeleteFailure()
+{
+	message_write('Error deleting image');
+}
+	
 /*
 BlogImageManager = Class.create();
 
