@@ -25,7 +25,7 @@
 			src="http://www.google.com/jsapi?key={$config->google->maps->key|escape}"></script>
 
 			{if $section == 'blogmanager'}
-				<script type="text/javascript" src="/js/BlogLocationManager.class.js"></script>
+				<script type="text/javascript" src="/js/BlogLocationManager.js"></script>
 			{/if}
 		{/if}
     </head>

@@ -12,8 +12,4 @@
 
 <div id="location-manager"></div>
 
-<script type="text/javascript">
-	new BlogLocationManager('location-manager', 'location-add');
-</script>
-
 {include file='footer.tpl' leftcolumn='blogmanager/lib/left-column.tpl'}
