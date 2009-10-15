@@ -10,26 +10,14 @@
 		<script type="text/javascript" src="/js/ui.draggable.js"></script>-->
 		<link rel="stylesheet" type="text/css" href="/css/jquery.lightbox-0.5.css" media="screen" />
 		<script type="text/javascript">
-			function dragSuccess(response)
-			{
-				alert('success');
-			}
-			function dragError(response)
-			{
-				alert('error');
-			}
-			$(function(){
-				$.ajax({
-					url			: 'http://phpweb20/blogmanager/locationsmanage',
-					type		: 'post',
-					data		: 'action=move&post_id=37'
-								+ '&location_id=' + 1
-								+ '&latitude=15'
-								+ '&longitude=105',
-					dataType	: 'json',
-					success		: dragSuccess,
-					error		: dragError
-				});
+			var a = 5;
+			var b = 6;
+			var c = a + b;
+			alert(c);
+
+			var ar = new Array(1,2);
+			$.each(ar, function(i,v){
+				alert(v);
 			});
 
 		</script>
