@@ -9,6 +9,7 @@
 		<input type="submit" value="Add Location" />
 	</div>
 </form>
+<br />
 
 <div id="location-manager"></div>
 

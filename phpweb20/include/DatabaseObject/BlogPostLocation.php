@@ -4,7 +4,7 @@ class DatabaseObject_BlogPostLocation extends DatabaseObject
 {
 	public function  __construct($db)
 	{
-		parent::__construct($db, 'blog_post_locations', 'location_id');
+		parent::__construct($db, 'blog_posts_locations', 'location_id');
 
 		$this->add('post_id');
 		$this->add('longitude');
