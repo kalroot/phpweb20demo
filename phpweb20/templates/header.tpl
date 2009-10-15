@@ -15,8 +15,9 @@
         {/if}
 
 		{if $lightbox}
+			<script type="text/javascript" src="/js/jquery.lightbox-0.5.min.js"></script>
 			<script type="text/javascript" src="/js/lightbox.js"></script>
-			<link rel="stylesheet" href="/css/lightbox.css" type="text/css" />
+			<link rel="stylesheet" href="/css/jquery.lightbox-0.5.css" type="text/css" />
 		{/if}
 
 		{if $maps}
