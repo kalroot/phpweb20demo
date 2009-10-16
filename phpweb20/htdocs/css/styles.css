@@ -363,6 +363,11 @@
 	#location-manager {
 		height		: 400px;
 	}
+
+	#post-locations .map {
+		height		: 400px;
+		clear		: both;
+	}
 }
 
 @media print {

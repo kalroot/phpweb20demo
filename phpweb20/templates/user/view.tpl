@@ -1,4 +1,4 @@
-{include file='header.tpl' lightbox=true}
+{include file='header.tpl' lightbox=true maps=$post->locations|@count}
 
 <div id="post-tags">
 	<strong>Tags:</strong>
@@ -25,6 +25,25 @@
 <div class="post-content">
 	{$post->profile->content}
 </div>
+
+{if $post->locations|@count > 0}
+	<div id="post-locations">
+		<h2>Locations</h2>
+		<ul>
+			{foreach from=$post->locations item=location}
+				<li>
+					<abbr class="geo" title="{$location->latitude};{$location->longitude}">
+						{$location->description|escape}
+					</abbr>
+				</li>
+			{/foreach}
+		</ul>
+
+		<div class="map"></div>
+	</div>
+
+	<script type="text/javascript" src="/js/BlogLocations.js"></script>
+{/if}
 
 {include file='footer.tpl' leftcolumn='user/lib/left-column.tpl'
 						   rightcolumn='user/lib/right-column.tpl'}

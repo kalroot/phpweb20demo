@@ -4,7 +4,7 @@ var form		= null;
 var post_id		= null;
 var map			= null;
 var geocoder	= null;
-var markers		= new Array();
+var markers		= {};
 
 
 $(function(){
@@ -51,8 +51,7 @@ function loadLocationsSuccess(response)
 	}
 
 	$.each(response.locations, function(index, data){
-		if (data)
-			addMarkerToMap(data.location_id, data.latitude, data.longitude, data.description);
+		addMarkerToMap(data.location_id, data.latitude, data.longitude, data.description);
 	});
 
 	zoomAndCenterMap();
@@ -67,8 +66,7 @@ function zoomAndCenterMap()
 {
 	var bounds = new google.maps.LatLngBounds();
 	$.each(markers, function(index, data){
-		if (data)
-			bounds.extend(data.getPoint());
+		bounds.extend(data.getPoint());
 	});
 
 	if (bounds.isEmpty())

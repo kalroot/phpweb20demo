@@ -8,7 +8,21 @@ $config = new Zend_Config_Ini('../settings.ini', 'development');
 Zend_Registry::set('config', $config);
 
 $logger = new Zend_Log(new Zend_Log_Writer_Stream($config->logging->file));
+
+try
+{
+	$writer = new EmailLogger($config->logging->email);
+	$writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::CRIT));
+	$logger->addWriter($writer);
+}
+catch (Exception $ex)
+{
+	
+}
+
 Zend_Registry::set('logger', $logger);
+
+$logger->crit('Test message');
 
 $params = array('host'		=> $config->database->hostname,
 				'username'	=> $config->database->username,

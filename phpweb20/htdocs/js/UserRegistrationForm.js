@@ -12,15 +12,6 @@ function showError(key, val)
 	}
 }
 
-options =
-{
-	url				: $('#registration-form').attr('action'),
-	type			: 'POST',
-	dataType		: 'json',
-	beforeSubmit	: resetErrors,
-	success			: onSuccess
-}
-
 function onSuccess(response)
 {
 	if (response.errors != '')
@@ -38,5 +29,9 @@ function onSuccess(response)
 
 $(function(){
 	resetErrors();
-	$('#registration-form').ajaxForm(options);
+	$('#registration-form').ajaxForm({
+		dataType		: 'json',
+		beforeSubmit	: resetErrors,
+		success			: onSuccess
+	});
 });

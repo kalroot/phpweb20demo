@@ -32,10 +32,7 @@ class AccountController extends CustomControllerAction
 		
 		if ($validate)
 		{
-			if ($fp->hasError())
-				$json = array('errors' => $fp->getErrors());
-			else
-				$json = array('errors' => null);
+			$json = array('errors' => $fp->getErrors());
 			$this->sendJson($json);
 		}
 		else
