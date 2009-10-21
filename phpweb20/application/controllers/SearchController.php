@@ -23,7 +23,7 @@ class SearchController extends CustomControllerAction
 			if (strlen($q) == 0)
 				throw new Exception('No search term specified');
 
-			$path = Model_DatabaseObject_BlogPost::getIndexFullpath();
+			$path = DatabaseObject_BlogPost::getIndexFullpath();
 			$index = Zend_Search_Lucene::open($path);
 			$hits = $index->find($q);
 
@@ -40,10 +40,10 @@ class SearchController extends CustomControllerAction
 			foreach ($hits as $hit)
 				$post_ids[] = (int)$hit->post_id;
 
-			$options = array('status'	 => Model_DatabaseObject_BlogPost::STATUS_LIVE,
+			$options = array('status'	 => DatabaseObject_BlogPost::STATUS_LIVE,
 							 'post_id'	 => $post_ids);
 
-			$posts = Model_DatabaseObject_BlogPost::GetPosts($this->db, $options);
+			$posts = DatabaseObject_BlogPost::GetPosts($this->db, $options);
 			foreach ($post_ids as $post_id)
 			{
 				if (array_key_exists($post_id, $posts))
@@ -56,7 +56,7 @@ class SearchController extends CustomControllerAction
 			if (count($user_ids) > 0)
 			{
 				$options = array('user_id' => $user_ids);
-				$users = Model_DatabaseObject_User::GetUsers($this->db, $options);
+				$users = DatabaseObject_User::GetUsers($this->db, $options);
 			}
 			else
 				$users = array();
@@ -80,7 +80,7 @@ class SearchController extends CustomControllerAction
 	{
 		$q = trim($this->getRequest()->getPost('q'));
 
-		$suggestions = Model_DatabaseObject_BlogPost::GetTagSuggestions($this->db, $q, 10);
+		$suggestions = DatabaseObject_BlogPost::GetTagSuggestions($this->db, $q, 10);
 		$this->sendJson($suggestions);
 	}
 }

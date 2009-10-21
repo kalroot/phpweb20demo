@@ -40,7 +40,7 @@
         			<a href="{geturl controller='index'}">Home</a>
                 </li>
 			{* {insert name=get_auth section=$section} *}
-			{dynamic}
+			
             {if $authenticated}
             	<li{if $section == 'account'} class="active"{/if}>
                 	<a href="{geturl controller='account'}">Your Account</a>
@@ -57,7 +57,7 @@
                 	<a href="{geturl controller='account' action='login'}">Login</a>
                 </li>
             {/if}
-			{/dynamic}
+			
             </ul>
         </div>
         

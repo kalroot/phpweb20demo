@@ -7,6 +7,14 @@ class Templater extends Zend_View_Abstract
 	
 	public function __construct()
 	{
+		//此处不可使用如下方法获得bootstrap
+		//$bootstrap = Zend_Controller_Front::getInstance()->getParam('bootstrap');
+		//因为是application->run阶段才$front->setParam('bootstrap', $this); 见Bootstrap.php的76行
+		//在具体的Controller实现的时候，就可以使用此种方法。
+		//若此时采用此种方法获取bootstrap，获取的bootstrap为空，如下：
+		//Zend_Debug::dump(Zend_Controller_Front::getInstance()->getParam('bootstrap'));
+
+		//所以此处采用的办法是从Resource把config传过来
 		$config = Zend_Registry::get('config');
 		
 		require_once('Smarty/Smarty.class.php');

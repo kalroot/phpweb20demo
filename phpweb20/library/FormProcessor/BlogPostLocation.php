@@ -5,12 +5,12 @@ class FormProcessor_BlogPostLocation extends FormProcessor
 	protected $post;
 	public $location;
 
-	public function  __construct(Model_DatabaseObject_BlogPost $post)
+	public function  __construct(DatabaseObject_BlogPost $post)
 	{
 		parent::__construct();
 
 		$this->post = $post;
-		$this->location = new Model_DatabaseObject_BlogPostLocation($post->getDb());
+		$this->location = new DatabaseObject_BlogPostLocation($post->getDb());
 		$this->location->post_id = $this->post->getId();
 	}
 

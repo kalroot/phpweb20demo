@@ -13,7 +13,7 @@ function smarty_function_imagefilename($params, $smarty)
 
 	require_once $smarty->_get_plugin_filepath('function', 'geturl');
 
-	$hash = Model_DatabaseObject_BlogPostImage::GetImageHash($params['id'], $params['w'], $params['h']);
+	$hash = DatabaseObject_BlogPostImage::GetImageHash($params['id'], $params['w'], $params['h']);
 
 	$options = array('controller' => 'utility', 'action' => 'image');
 

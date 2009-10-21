@@ -25,10 +25,10 @@ class FormProcessor_BlogPost extends FormProcessor
 		parent::__construct();
 		
 		$this->db = $db;
-		$this->user = new Model_DatabaseObject_User($db);
+		$this->user = new DatabaseObject_User($db);
 		$this->user->load($user_id);
 		
-		$this->post = new Model_DatabaseObject_BlogPost($db);
+		$this->post = new DatabaseObject_BlogPost($db);
 		$this->post->loadForUser($this->user->getId(), $post_id);
 		
 		if ($this->post->isSaved())

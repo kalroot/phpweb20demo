@@ -20,6 +20,15 @@
             {include file='lib/error.tpl' error=$errors.password}
         </div>
 
+		<div class="row">
+			<label for="form_expires">Expires:</label><br />
+			<input type="radio" name="expires" value="31536000" />Ever
+			<input type="radio" name="expires" value="2592000" />Month
+			<input type="radio" name="expires" value="86400" />Day
+			<input type="radio" name="expires" value="3600" />Hour
+			<input type="radio" name="expires" value="0" checked />No
+		</div>
+
         <div class="submit">
             <input type="submit" value="Login" />
         </div>
