@@ -8,7 +8,6 @@ class CustomControllerAction extends Zend_Controller_Action
 	
 	public function init()
 	{
-		//$this->db = Zend_Registry::get('db');
 		$this->db = $this->getFrontController()->getParam('bootstrap')->getPluginResource('db')->getDbAdapter();
 		$this->breadcrumbs = new Breadcrumbs();
 		$this->breadcrumbs->addStep('Home', $this->getUrl(null, 'index'));
@@ -33,7 +32,6 @@ class CustomControllerAction extends Zend_Controller_Action
 		$this->view->title = $this->breadcrumbs->getTitle();
 		$this->view->messages = $this->messenger->getMessages();
 		$this->view->isXmlHttpRequest = $this->getRequest()->isXmlHttpRequest();
-		//$this->view->config = $this->getFrontController()->getParam('bootstrap')->getPluginResource('config')->getConfig();
 		$this->view->config = Zend_Registry::get('config');
 	}
 	
