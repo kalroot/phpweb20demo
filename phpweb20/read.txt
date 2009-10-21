@@ -1,0 +1,8 @@
+phpweb20项目更改说明：
+
+1、将项目升级以适应Zend Framework 1.9框架特性
+2、将所有Prototype与Scriptaculous改为用jQuery实现
+3、实现首页缓存
+4、用户登录时可选择保存登录时间
+5、Captcha改为用Zend_Captcha实现
+6、图片请求直接请求图片文件，而不是从前端获取
