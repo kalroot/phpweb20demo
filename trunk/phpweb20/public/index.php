@@ -14,17 +14,63 @@ set_include_path(implode(PATH_SEPARATOR, array(
     get_include_path(),
 )));
 
-/** Zend_Application */
-require_once 'Zend/Application.php';
+require_once 'Zend/Loader/Autoloader.php';
+Zend_Loader_Autoloader::getInstance()->setFallbackAutoloader(true);
 
-// Create application, bootstrap, and run
-$application = new Zend_Application(
-    APPLICATION_ENV,
-    APPLICATION_PATH . '/../settings.ini'
+$logger = new Zend_Log(new Zend_Log_Writer_Null());
+
+try
+{
+	$writer = new EmailLogger($_SERVER['SERVER_ADMIN']);
+    $writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::CRIT));
+    $logger->addWriter($writer);
+
+	$config = new Zend_Config_Ini(APPLICATION_PATH . "/../config.ini", 'config');
+	Zend_Registry::set('config', $config);
+
+	$logger->addWriter(new Zend_Log_Writer_Stream($config->logging->file));
+	$writer->setEmail($config->logging->email);
+
+	Zend_Registry::set('logger', $logger);
+
+
+	/** Zend_Application */
+	//require_once 'Zend/Application.php';
+
+	// Create application, bootstrap, and run
+	$application = new Zend_Application(
+		APPLICATION_ENV,
+		APPLICATION_PATH . '/../settings.ini'
 	// 默认配置文件放在application/configs目录下，文件名为application.ini
-);
-$application->bootstrap()
-            ->run();
+	);
+
+//把自己定义的类文件都放到library目录的Pw目录下，然后在配置文件中写入autoloadernamespaces.Pw = "Pw_"就可以自动加载了
+//这里要加载根目录下的东西，所以使用如下语句：
+//$application->getAutoloader()->setFallbackAutoloader(true);
+
+//Zend_Application_Module_Autoloader有一定的局限性，默认情况下他只能加载models, forms等文件夹，自定义的不可以。
+//所以此处application下只有controllers以及views文件夹，models下的DatabaseObject全部移至library
+
+	$application->Bootstrap()->run();
+}
+catch (Exception $ex)
+{
+	$logger->emerg($ex->getMessage());
+
+	header('Location: /error.html');
+	exit;
+}
+
+//$logger = $application->getBootstrap()->getPluginResource('logger')->getLogger();
+//$logger->debug('from index.php');
+
+
+//$application->getBootstrap()->bootstrap('FrontController');
+//$application->getBootstrap()->bootstrap('db');
+//$application->getBootstrap()->bootstrap('router');
+//$application->getBootstrap()->bootstrap('view');
+//$application->getBootstrap()->bootstrap('log');
+            //->run();
 
 /*
 require_once('Zend/Loader/Autoloader.php');

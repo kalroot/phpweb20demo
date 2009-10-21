@@ -11,7 +11,7 @@ class FormProcessor_UserRegistration extends FormProcessor
 		parent::__construct();
 		
 		$this->db = $db;
-		$this->user = new Model_DatabaseObject_User($db);
+		$this->user = new DatabaseObject_User($db);
 		$this->user->type = 'member';
 	}
 	
@@ -27,7 +27,7 @@ class FormProcessor_UserRegistration extends FormProcessor
 		
 		if (strlen($this->username) == 0)
 			$this->addError('username', 'Please enter a username');
-		else if (!Model_DatabaseObject_User::IsValidUsername($this->username))
+		else if (!DatabaseObject_User::IsValidUsername($this->username))
 			$this->addError('username', 'Please enter a valid username');
 		else if ($this->user->usernameExists($this->username))
 			$this->addError('username', 'The selected username already exists');

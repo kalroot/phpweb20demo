@@ -17,7 +17,7 @@
             parent::__construct();
 
             $this->db = $db;
-            $this->user = new Model_DatabaseObject_User($db);
+            $this->user = new DatabaseObject_User($db);
             $this->user->load($user_id);
 
             $this->email = $this->user->profile->email;

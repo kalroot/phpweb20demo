@@ -5,12 +5,12 @@ class FormProcessor_BlogPostImage extends FormProcessor
 	protected $post;
 	public $image;
 	
-	public function  __construct(Model_DatabaseObject_BlogPost $post)
+	public function  __construct(DatabaseObject_BlogPost $post)
 	{
 		parent::__construct();
 
 		$this->post = $post;
-		$this->image = new Model_DatabaseObject_BlogPostImage($post->getDb());
+		$this->image = new DatabaseObject_BlogPostImage($post->getDb());
 		$this->image->post_id = $this->post->getId();
 	}
 

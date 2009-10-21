@@ -36,11 +36,11 @@ class UtilityController extends CustomControllerAction
 		$h	= (int)$request->getQuery('h');
 		$hash = $request->getQuery('hash');
 
-		$realHash = Model_DatabaseObject_BlogPostImage::GetImageHash($id, $w, $h);
+		$realHash = DatabaseObject_BlogPostImage::GetImageHash($id, $w, $h);
 
 		$this->_helper->viewRenderer->setNoRender();
 
-		$image = new Model_DatabaseObject_BlogPostImage($this->db);
+		$image = new DatabaseObject_BlogPostImage($this->db);
 		if ($hash != $realHash || !$image->load($id))
 		{
 			$response->setHttpResponseCode(404);

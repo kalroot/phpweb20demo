@@ -17,7 +17,7 @@ class UserController extends CustomControllerAction
 		if (strlen($username) == 0)
 			$this->_redirect($this->getUrl('index', 'index'));
 		
-		$this->user = new Model_DatabaseObject_User($this->db);
+		$this->user = new DatabaseObject_User($this->db);
 		
 		if (!$this->user->loadByUsername($username))
 		{
@@ -54,12 +54,12 @@ class UserController extends CustomControllerAction
 		
 		$options = array(
 			'user_id' => $this->user->getId(),
-			'status'  => Model_DatabaseObject_BlogPost::STATUS_LIVE,
+			'status'  => DatabaseObject_BlogPost::STATUS_LIVE,
 			'limit'   => $limit,
 			'order'   => 'p.ts_created desc'
 		);
 		
-		$posts = Model_DatabaseObject_BlogPost::GetPosts($this->db, $options);
+		$posts = DatabaseObject_BlogPost::GetPosts($this->db, $options);
 		
 		$this->view->posts = $posts;
 	}
@@ -78,7 +78,7 @@ class UserController extends CustomControllerAction
 			));
 		}
 		
-		$post = new Model_DatabaseObject_BlogPost($this->db);
+		$post = new DatabaseObject_BlogPost($this->db);
 		$post->loadLivePost($this->user->getId(), $url);
 		
 		if (!$post->isSaved())
@@ -121,11 +121,11 @@ class UserController extends CustomControllerAction
 			'user_id' => $this->user->getId(),
 			'from'	  => date('Y-m-d H:i:s', $from),
 			'to'	  => date('Y-m-d H:i:s', $to),
-			'status'  => Model_DatabaseObject_BlogPost::STATUS_LIVE,
+			'status'  => DatabaseObject_BlogPost::STATUS_LIVE,
 			'order'	  => 'p.ts_created desc'
 		);
 		
-		$posts = Model_DatabaseObject_BlogPost::GetPosts($this->db, $options);
+		$posts = DatabaseObject_BlogPost::GetPosts($this->db, $options);
 		$this->breadcrumbs->addStep(date('F Y', $from));
 		
 		$this->view->month = $from;
@@ -148,10 +148,10 @@ class UserController extends CustomControllerAction
 		$options = array(
 			'user_id' => $this->user->getId(),
 			'tag'	  => $tag,
-			'status'  => Model_DatabaseObject_BlogPost::STATUS_LIVE,
+			'status'  => DatabaseObject_BlogPost::STATUS_LIVE,
 			'order'	  => 'p.ts_created desc'
 		);
-		$posts = Model_DatabaseObject_BlogPost::GetPosts($this->db, $options);
+		$posts = DatabaseObject_BlogPost::GetPosts($this->db, $options);
 		
 		$this->breadcrumbs->addStep('Tag: ' . $tag);
 		$this->view->tag = $tag;
@@ -162,12 +162,12 @@ class UserController extends CustomControllerAction
 	{
 		$options = array(
 			'user_id' => $this->user->getId(),
-			'status'  => Model_DatabaseObject_BlogPost::STATUS_LIVE,
+			'status'  => DatabaseObject_BlogPost::STATUS_LIVE,
 			'limit'   => 10,
 			'order'	  => 'p.ts_created desc'
 		);
 		
-		$recentPosts = Model_DatabaseObject_BlogPost::GetPosts($this->db, $options);
+		$recentPosts = DatabaseObject_BlogPost::GetPosts($this->db, $options);
 		
 		$domain = 'http://' . $this->getRequest()->getServer('HTTP_HOST');
 		$url = $this->getCustomUrl(

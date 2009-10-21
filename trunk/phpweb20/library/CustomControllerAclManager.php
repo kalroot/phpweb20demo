@@ -6,9 +6,10 @@ class CustomControllerAclManager extends Zend_Controller_Plugin_Abstract
 	private $_authController = array('controller'	=> 'account',
 									 'action'		=> 'login');
 	
-	public function __construct(Zend_Auth $auth)
+	public function __construct()
 	{
-		$this->auth = $auth;
+		$this->auth = Zend_Auth::getInstance();
+		$this->auth->setStorage(new AuthSession());
 		$this->acl = new Zend_Acl();
 		
 		// add the different user roles

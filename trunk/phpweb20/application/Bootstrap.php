@@ -2,6 +2,44 @@
 
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
+	/*
+	protected function _initABC()
+	{
+		throw new Exception('this error is from _initABC');
+	}*/
+	/*
+	protected function _initConfig()
+	{
+		$config = new Zend_Config_Ini(APPLICATION_PATH . "/../config.ini", 'config');
+		Zend_Registry::set('config', $config);
+	}
+
+	protected function _initLogger()
+	{
+		$config = Zend_Registry::get('config');
+		
+		$logger = new Zend_Log(new Zend_Log_Writer_Stream($config->logging->file));
+		$writer = new EmailLogger($config->logging->email);
+		$writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::CRIT));
+		$logger->addWriter($writer);
+		
+		Zend_Registry::set('logger', $logger);
+	}*/
+	/*
+	protected function _initAutoload()
+	{
+		$loader = Zend_Loader_Autoloader::getInstance();
+		$loader->setFallbackAutoloader(true);
+
+		$auth = Zend_Auth::getInstance();
+		$auth->setStorage(new Zend_Auth_Storage_Session());
+
+		$this->bootstrap('FrontController')->bootstrap('db')
+			 ->bootstrap('router')->bootstrap('view');
+		$this->getResource('frontcontroller')->registerPlugin(new CustomControllerAclManager($auth));
+		Zend_Registry::set('db', $this->getResource('db'));
+	}*/
+	/*
 	protected function _initApplicationAutoload()
 	{
 		$autoloader = new Zend_Application_Module_Autoloader(array(
@@ -27,8 +65,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	{
 		$config = new Zend_Config_Ini(APPLICATION_PATH . '/../settings.ini', APPLICATION_ENV);
 		Zend_Registry::set('config', $config);
-	}
+	}*/
 
+/*
 	protected function _initView()
 	{
 		// 如希望在分发前端控制器前修改ViewRenderer设定，可采用下面的两种方法：
@@ -49,8 +88,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		$viewRenderer = Zend_Controller_Action_HelperBroker::getStaticHelper('ViewRenderer');
 		$viewRenderer->setView(new Templater())
 					 ->setViewSuffix('tpl');
-	}
-
+	}*/
+/*
 	protected function _initRouter()
 	{
 		$this->bootstrap('frontController');
@@ -90,6 +129,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		$writer->addFilter(new Zend_Log_Filter_Priority(Zend_Log::CRIT));
 		$logger->addWriter($writer);
 		Zend_Registry::set('logger', $logger);
-	}
+	}*/
 }
 

@@ -46,7 +46,7 @@ class AccountController extends CustomControllerAction
 	{
 		$session = new Zend_Session_Namespace('registration');
 		
-		$user = new Model_DatabaseObject_User($this->db);
+		$user = new DatabaseObject_User($this->db);
 		if (!$user->load($session->user_id))
 		{
 			$this->_forward('register');
@@ -97,16 +97,20 @@ class AccountController extends CustomControllerAction
 				$result = $auth->authenticate($adapter);
 				if ($result->isValid())
 				{
-					$user = new Model_DatabaseObject_User($this->db);
+					$user = new DatabaseObject_User($this->db);
 					$user->load($adapter->getResultRowObject()->user_id);
 					$user->loginSuccess();
+
+					$seconds = (int)$request->getPost('expires');
+					if ($seconds > 0)
+						$auth->getStorage()->setExpirationSeconds($seconds);
 					
 					$identity = $user->createAuthIdentity();
 					$auth->getStorage()->write($identity);
 					$this->_redirect($redirect);
 				}
 				
-				Model_DatabaseObject_User::LoginFailure($username, $result->getCode());
+				DatabaseObject_User::LoginFailure($username, $result->getCode());
 				$errors['username'] = 'Your login details were invalid';
 			}
 		}
@@ -144,7 +148,7 @@ class AccountController extends CustomControllerAction
 				}
 				else
 				{
-					$user = new Model_DatabaseObject_User($this->db);
+					$user = new DatabaseObject_User($this->db);
 					if ($user->load($username, 'username'))
 					{
 						$user->fetchPassword();
@@ -165,7 +169,7 @@ class AccountController extends CustomControllerAction
 				$id = $this->getRequest()->getQuery('id');
 				$key = $this->getRequest()->getQuery('key');
 				
-				$user = new Model_DatabaseObject_User($this->db);
+				$user = new DatabaseObject_User($this->db);
 				if (!$user->load($id))
 					$errors['confirm'] = 'Error confirming new password';
 				else if (!$user->confirmNewPassword($key))
@@ -201,7 +205,7 @@ class AccountController extends CustomControllerAction
 	
 	public function detailscompleteAction()
     {
-		$user = new Model_DatabaseObject_User($this->db);
+		$user = new DatabaseObject_User($this->db);
         $user->load(Zend_Auth::getInstance()->getIdentity()->user_id);
 
 		$this->breadcrumbs->addStep('Your Account Details', $this->getUrl('details'));

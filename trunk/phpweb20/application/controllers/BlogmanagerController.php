@@ -35,9 +35,9 @@ class BlogmanagerController extends CustomControllerAction
 			'order'	  => 'p.ts_created desc'
 		);
 		
-		$recentPosts = Model_DatabaseObject_BlogPost::GetPosts($this->db, $options);
+		$recentPosts = DatabaseObject_BlogPost::GetPosts($this->db, $options);
 		
-		$totalPosts = Model_DatabaseObject_BlogPost::GetPostsCount($this->db,
+		$totalPosts = DatabaseObject_BlogPost::GetPostsCount($this->db,
 							array('user_id' => $this->identity->user_id));
 		
 		$this->view->month		 = $from;
@@ -77,7 +77,7 @@ class BlogmanagerController extends CustomControllerAction
 	{
 		$post_id = (int) $this->getRequest()->getQuery('id');
 		
-		$post = new Model_DatabaseObject_BlogPost($this->db);
+		$post = new DatabaseObject_BlogPost($this->db);
 		if (!$post->loadForUser($this->identity->user_id, $post_id))
 			$this->_redirect($this->getUrl());
 		
@@ -90,7 +90,7 @@ class BlogmanagerController extends CustomControllerAction
 		$request = $this->getRequest();
 		$post_id = (int)$request->getPost('id');
 		
-		$post = new Model_DatabaseObject_BlogPost($this->db);
+		$post = new DatabaseObject_BlogPost($this->db);
 		if (!$post->loadForUser($this->identity->user_id, $post_id))
 			$this->_redirect($this->getUrl());
 		
@@ -128,7 +128,7 @@ class BlogmanagerController extends CustomControllerAction
 	{
 		$request = $this->getRequest();
 		$post_id = (int)$request->getPost('id');
-		$post = new Model_DatabaseObject_BlogPost($this->db);
+		$post = new DatabaseObject_BlogPost($this->db);
 		if (!$post->loadForUser($this->identity->user_id, $post_id))
 			$this->_redirect($this->getUrl());
 		
@@ -151,7 +151,7 @@ class BlogmanagerController extends CustomControllerAction
 	{
 		$request = $this->getRequest();
 		$post_id = (int)$request->getPost('id');
-		$post = new Model_DatabaseObject_BlogPost($this->db);
+		$post = new DatabaseObject_BlogPost($this->db);
 		$json = array();
 
 		if (!$post->loadForUser($this->identity->user_id, $post_id))
@@ -176,7 +176,7 @@ class BlogmanagerController extends CustomControllerAction
 		else if ($request->getPost('delete'))
 		{
 			$image_id = (int)$request->getPost('image');
-			$image = new Model_DatabaseObject_BlogPostImage($this->db);
+			$image = new DatabaseObject_BlogPostImage($this->db);
 			if ($image->loadForPost($post->getId(), $image_id))
 			{
 				$image->delete();
@@ -203,7 +203,7 @@ class BlogmanagerController extends CustomControllerAction
 		$request = $this->getRequest();
 		$post_id = (int)$request->getQuery('id');
 
-		$post = new Model_DatabaseObject_BlogPost($this->db);
+		$post = new DatabaseObject_BlogPost($this->db);
 		if (!$post->loadForUser($this->identity->user_id, $post_id))
 			$this->_redirect($this->getUrl());
 
@@ -222,7 +222,7 @@ class BlogmanagerController extends CustomControllerAction
 		$action  = $request->getPost('action');
 		$post_id = $request->getPost('post_id');
 		$ret = array('post_id' => 0);
-		$post = new Model_DatabaseObject_BlogPost($this->db);
+		$post = new DatabaseObject_BlogPost($this->db);
 
 		if ($post->loadForUser($this->identity->user_id, $post_id))
 		{
@@ -259,7 +259,7 @@ class BlogmanagerController extends CustomControllerAction
 
 				case 'delete':
 					$location_id = $request->getPost('location_id');
-					$location = new Model_DatabaseObject_BlogPostLocation($this->db);
+					$location = new DatabaseObject_BlogPostLocation($this->db);
 					if ($location->loadForPost($post->getId(), $location_id))
 					{
 						$ret['location_id'] = $location->getId();
@@ -269,7 +269,7 @@ class BlogmanagerController extends CustomControllerAction
 
 				case 'move':
 					$location_id = $request->getPost('location_id');
-					$location = new Model_DatabaseObject_BlogPostLocation($this->db);
+					$location = new DatabaseObject_BlogPostLocation($this->db);
 					if ($location->loadForPost($post->getId(), $location_id))
 					{
 						$location->longitude = $request->getPost('longitude');
