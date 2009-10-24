@@ -17,7 +17,7 @@
 		{assign var=image value=$post->images|@current}
 		<div class="teaser-image">
 			<a href="{$url|escape}">
-				<img src="{imagefilename id=$image->getId() w=100}" alt="" />
+				<img src="{imagefilename id=$image->getId() name=m type=$image->filetype}" alt="" />
 			</a>
 		</div>
 	{/if}

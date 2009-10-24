@@ -9,6 +9,7 @@ class DatabaseObject_BlogPostImage extends DatabaseObject
 		parent::__construct($db, 'blog_posts_images', 'image_id');
 
 		$this->add('filename');
+		$this->add('filetype');
 		$this->add('post_id');
 		$this->add('ranking');
 	}
@@ -17,12 +18,12 @@ class DatabaseObject_BlogPostImage extends DatabaseObject
 	{
 		$config = Zend_Registry::get('config');
 
-		return sprintf('%s/uploaded-files', $config->paths->data);
+		return $config->paths->upload;
 	}
 
 	public function getFullPath()
 	{
-		return sprintf('%s/%d', self::GetUploadPath(), $this->getId());
+		return sprintf('%s/%d.%s', self::GetUploadPath(), $this->getId(), $this->filetype);
 	}
 
 	public function uploadFile($path)
@@ -54,7 +55,26 @@ class DatabaseObject_BlogPostImage extends DatabaseObject
 	public function postInsert()
 	{
 		if (strlen($this->_uploadedFile) > 0)
-			return move_uploaded_file($this->_uploadedFile, $this->getFullPath());
+		{
+			if (!move_uploaded_file($this->_uploadedFile, $this->getFullPath()))
+				return false;
+
+			try
+			{
+				$this->createThumbnail(200, 65, 's');
+				$this->createThumbnail(100, 0, 'm');
+				$this->createThumbnail(150, 0, 'b');
+				$this->createThumbnail(600, 0, 'h');
+
+				return true;
+			}
+			catch (Exception $ex)
+			{
+				$logger = Zend_Registry::get('logger');
+				$logger->crit($ex->getMessage());
+				return false;
+			}
+		}
 
 		return false;
 	}
@@ -63,7 +83,7 @@ class DatabaseObject_BlogPostImage extends DatabaseObject
 	{
 		unlink($this->getFullPath());
 
-		$pattern = sprintf('%s/%d.*', self::GetThumbnailPath(), $this->getId());
+		$pattern = sprintf('%s/%d*', self::GetThumbnailPath(), $this->getId());
 		foreach (glob($pattern) as $thumbnail)
 		{
 			unlink($thumbnail);
@@ -76,13 +96,13 @@ class DatabaseObject_BlogPostImage extends DatabaseObject
 	{
 		$config = Zend_Registry::get('config');
 
-		return sprintf('%s/tmp/thumbnails', $config->paths->data);
+		return $config->paths->attachments;
 	}
 
-	public function createThumbnail($maxW, $maxH)
+	public function createThumbnail($maxW, $maxH, $name)
 	{
 		$fullpath = $this->getFullPath();
-		$ts = (int)filemtime($fullpath);
+		//$ts = (int)filemtime($fullpath);
 		$info = getImageSize($fullpath);
 
 		$w = $info[0];
@@ -105,8 +125,8 @@ class DatabaseObject_BlogPostImage extends DatabaseObject
 			$newW = $newH * $ratio;
 		}
 		
-		if ($w == $newW && $h == $newH)
-			return $fullpath;
+		//if ($w == $newW && $h == $newH)
+			//return $fullpath;
 		
 		switch ($info[2])
 		{
@@ -123,23 +143,23 @@ class DatabaseObject_BlogPostImage extends DatabaseObject
 				$outfunc = 'ImagePng';
 				break;
 			default:
-				throw new Exception('Invalid image type');
+				throw new Exception('Image Id ' . $this->getId() . ': Invalid image type');
 		}
 		
-		$filename = sprintf('%d.%dx%d.%d', $this->getId(), $newW, $newH, $ts);
+		$filename = sprintf('%d%s.%s', $this->getId(), $name, $this->filetype);
 		$path = self::GetThumbnailPath();
 		if (!file_exists($path))
 			mkdir($path, 0777);
 		
 		if (!is_writable($path))
-			throw new Exception('Unable to write thumbnail dir');
+			throw new Exception('Image Id ' . $this->getId() . ': Unable to write thumbnail dir');
 		
 		$thumbPath = sprintf('%s/%s', $path, $filename);
 		if (!file_exists($thumbPath))
 		{
 			$im = @$infunc($fullpath);
 			if (!$im)
-				throw new Exception('Unable to read image file');
+				throw new Exception('Image Id ' . $this->getId() . ': Unable to read image file');
 			
 			$thumb = imagecreatetruecolor($newW, $newH);
 			imagecopyresampled($thumb, $im, 0, 0, 0, 0, $newW, $newH, $w, $h);
@@ -147,9 +167,9 @@ class DatabaseObject_BlogPostImage extends DatabaseObject
 		}
 		
 		if (!file_exists($thumbPath))
-			throw new Exception('Unknown error occurred creating thumbnail');
+			throw new Exception('Image Id ' . $this->getId() . ': Unknown error occurred creating thumbnail');
 		if (!is_readable($thumbPath))
-			throw new Exception('Unable to read thumbnail');
+			throw new Exception('Image Id ' . $this->getId() . ': Unable to read thumbnail');
 			
 		return $thumbPath;
 	}

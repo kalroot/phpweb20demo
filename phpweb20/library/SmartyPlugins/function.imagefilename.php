@@ -2,23 +2,28 @@
 
 function smarty_function_imagefilename($params, $smarty)
 {
+	$config = Zend_Registry::get('config');
+	$attachmentsPath = $config->paths->attachments;
+	
 	if (!isset($params['id']))
-		$params['id'] = 0;
+		return '/attachments/noimage.jpg';
 
-	if (!isset($params['w']))
-		$params['w'] = 0;
+	if (!isset($params['name']))
+		return '/attachments/noimage.jpg';
 
-	if (!isset($params['h']))
-		$params['h'] = 0;
+	if (!isset($params['type']))
+		return '/attachments/noimage.jpg';
 
-	require_once $smarty->_get_plugin_filepath('function', 'geturl');
+	$completePath = sprintf('%s/%d%s.%s', 
+							$attachmentsPath, $params['id'], $params['name'], $params['type']);
 
-	$hash = DatabaseObject_BlogPostImage::GetImageHash($params['id'], $params['w'], $params['h']);
+	$path = sprintf('/attachments/%d%s.%s', 
+					$params['id'], $params['name'], $params['type']);
+				
+	if (!file_exists($completePath) || !is_readable($completePath))
+		return '/attachments/noimage.jpg';
 
-	$options = array('controller' => 'utility', 'action' => 'image');
-
-	return sprintf('%s?id=%d&w=%d&h=%d&hash=%s',
-		smarty_function_geturl($options, $smarty), $params['id'], $params['w'], $params['h'], $hash);
+	return $path;
 }
 
 ?>
