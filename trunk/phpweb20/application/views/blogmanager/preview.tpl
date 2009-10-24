@@ -76,7 +76,7 @@
 		<ul id="post_images">
 			{foreach from=$post->images item=image}
 				<li id="image_{$image->getId()}">
-					<img src="{imagefilename id=$image->getId() w=200 h=65}" alt="{$image->filename|escape}" />
+					<img src="{imagefilename id=$image->getId() name=s type=$image->filetype}" alt="{$image->filename|escape}" />
 					<form method="post" action="{geturl action='images'}">
 						<div>
 							<input type="hidden" name="id" value="{$post->getId()}" />

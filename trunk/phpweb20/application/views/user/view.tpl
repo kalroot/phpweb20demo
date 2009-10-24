@@ -16,8 +16,8 @@
 
 {foreach from=$post->images item=image}
 	<div class="post-image">
-		<a href="{imagefilename id=$image->getId() w=600}" rel="lightbox[blog]">
-			<img src="{imagefilename id=$image->getId() w=150}" />
+		<a href="{imagefilename id=$image->getId() name=h type=$image->filetype}" rel="lightbox[blog]">
+			<img src="{imagefilename id=$image->getId() name=b type=$image->filetype}" />
 		</a>
 	</div>
 {/foreach}

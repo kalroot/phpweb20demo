@@ -71,8 +71,13 @@ class FormProcessor_BlogPostImage extends FormProcessor
 		switch ($info[2])
 		{
 			case IMAGETYPE_PNG:
+				$type = "png";
+				break;
 			case IMAGETYPE_GIF:
+				$type = "gif";
+				break;
 			case IMAGETYPE_JPEG:
+				$type = "jpg";
 				break;
 
 			default:
@@ -83,6 +88,7 @@ class FormProcessor_BlogPostImage extends FormProcessor
 		if (!$this->hasError())
 		{
 			$this->image->uploadFile($file['tmp_name']);
+			$this->image->filetype = $type;
 			$this->image->filename = basename($file['name']);
 			$this->image->save();
 		}
