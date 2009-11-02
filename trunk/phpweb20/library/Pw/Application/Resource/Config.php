@@ -1,4 +1,4 @@
-1<?php
+<?php
 
 class Pw_Application_Resource_Config extends Zend_Application_Resource_ResourceAbstract
 {
