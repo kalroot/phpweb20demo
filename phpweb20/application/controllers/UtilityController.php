@@ -12,9 +12,12 @@ class UtilityController extends CustomControllerAction
 		
 		$captcha = Text_CAPTCHA::factory('Image');
 		
-		$opts = array('font_size' => 20,
-					  'font_path' => Zend_Registry::get('config')->paths->data,
-					  'font_file' => 'VeraBd.ttf');
+		$opts = array('font_size'	=> 20,
+					  'font_path'	=> Zend_Registry::get('config')->paths->data,
+					  'font_file'	=> 'VeraBd.ttf',
+					  'text_color'	=> '#FFFF33',
+					  'lines_color'	=> '#CCEEDD',
+					  'background_color'=> '#555555');
 		
 		$captcha->init(120, 60, $phrase, $opts);
 		
