@@ -1,4 +1,4 @@
-1<?php
+<?php
 
 class Pw_Application_Resource_Logger extends Zend_Application_Resource_ResourceAbstract
 {
